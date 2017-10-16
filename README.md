@@ -1,18 +1,16 @@
 # crawlerJs
-async web crawler using bfs algorithm 
+async web crawler using bfs algorithm
 
 
-TO USE: 
+** Usage
 
 open terminal -> navigate to chosen directory
 
 git clone https://github.com/RaheelaKhan1172/crawlerJs.git
 
-NOTE ** currently, you will have to manually go in and change the url and approperiate http || https request object. 
+node crawler.js url
+
+Example: node crawler.js http://google.com
+
+** NOTE ** currently, you will have to manually go in and change the url and approperiate http || https request object.
 ( fix soon )
-
-type node in directory where cloned repo is
-
-var [varName] = require('./crawler.js')
-
-[varName].bfs([url])
