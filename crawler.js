@@ -3,14 +3,14 @@
 //requires
 const https = require('https'),
     http = require('http');
-    
+
 // constants
 const domain = 'https://www.google.com';
 const reg = new RegExp('href="(.*?)"',"g");
 const sub = "www.google.com";
 function getPage(page) {
   return new Promise((resolve,reject) => {
-    https.get(page,(res) => {
+    protocol.get(page,(res) => {
       var dataRecieved = '';
       res.on('data', (d) => dataRecieved += d)
         .on('end', () => resolve(dataRecieved))
@@ -70,7 +70,7 @@ function bfs(startURL) {
   var currentLink,l;
   var links;
   q.push(startURL);
- 
+
 
   function handleRest(a) {
     if (!linksSeen.includes(a) && !q.includes(a)) {
@@ -78,7 +78,7 @@ function bfs(startURL) {
     }
   return q;
   }
- 
+
   function searchTheLinks(links) {
     return new Promise((resolve,reject) => {
         links.forEach(function(a,i) {
@@ -89,7 +89,7 @@ function bfs(startURL) {
       resolve();
     });
   }
-  
+
   function pushToSeen() {
     return new Promise((resolve,reject) => {
       if(!linksSeen.includes(currentLink)) {
@@ -105,15 +105,26 @@ function bfs(startURL) {
       getPage(formatUrl(currentLink)).then((content) => extractLinks(content)).then((extracted) => filterLinks(extracted)).then((links) => searchTheLinks(links)).then(() =>  pushToSeen())
             .then(() => {
               startSearch(q);
-            }); 
+            });
     } else {
       return done(linksSeen);
-    }  
+    }
   }
   startSearch(q);
-} 
+}
 
+var protocol = (function() {
+  try {
+    let url = process.argv[2];
+    let p = url.startsWith('http') ? https :
+      url.startsWith('https') ? http :
+      undefined;
+    if (!p) throw 'Url must begin with http or https';
+    return p;
+  } catch(e) {
+    console.log(e);
+    process.exit(-1);
+  }
+})()
 
-exports.getPage = getPage;
-exports.extractLinks = extractLinks;
-exports.bfs = bfs;
+bfs(process.argv[2]);
